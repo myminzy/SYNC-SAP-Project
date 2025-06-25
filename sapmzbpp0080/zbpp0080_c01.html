@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZBPP0080_C01</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZBPP0080_C01</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include ZB06_MRP_TEST_C01</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*----------------------------------------------------------------------*</font>
+<font color ="#0000FF">***INCLUDE ZB06_MRP_TEST_C01.</font>
+<font color ="#0000FF">*----------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          ZBPP0020_C01</font>
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">* 이벤트 클래스 선언 - 툴바 버튼 클릭 이벤트</font>
+CLASS LCL_EVENT_HANDLER DEFINITION.
+
+  PUBLIC SECTION.
+    CLASS-METHODS:
+
+      ON_TOOLBAR FOR EVENT TOOLBAR OF CL_GUI_ALV_GRID
+        IMPORTING E_OBJECT,
+
+      ON_USER_COMMAND FOR EVENT USER_COMMAND OF CL_GUI_ALV_GRID
+        IMPORTING E_UCOMM.
+
+
+ENDCLASS.
+
+<font color ="#0000FF">* 이벤트 클래스 선언</font>
+CLASS LCL_EVENT_HANDLER IMPLEMENTATION.
+
+<font color ="#0000FF">*  '상세 정보 조회' 툴바 버튼 생성</font>
+  METHOD ON_TOOLBAR.
+
+    DATA: LS_BUTTON TYPE STB_BUTTON.
+
+    LS_BUTTON-BUTN_TYPE = 3.
+
+    APPEND LS_BUTTON TO E_OBJECT-&gt;MT_TOOLBAR.
+
+    CLEAR: LS_BUTTON.
+    LS_BUTTON-FUNCTION = 'SEARCH'.
+    LS_BUTTON-TEXT = '상세 정보 조회'.
+    LS_BUTTON-BUTN_TYPE = 0.
+    LS_BUTTON-ICON = ICON_ZOOM_IN.
+    LS_BUTTON-QUICKINFO = 'SEARCH'.
+
+    APPEND LS_BUTTON TO E_OBJECT-&gt;MT_TOOLBAR.
+
+
+  ENDMETHOD.
+
+  METHOD ON_USER_COMMAND.
+
+    DATA: LS_COL TYPE LVC_S_SCOL.
+
+    CASE E_UCOMM.
+<font color ="#0000FF">*      툴바 버튼 클릭 이벤트</font>
+      WHEN 'SEARCH'.
+
+        GO_ALV-&gt;GET_SELECTED_ROWS(
+          IMPORTING
+            ET_INDEX_ROWS = ET_INDEX_ROW                " Indexes of Selected Rows
+        ).
+
+        READ TABLE ET_INDEX_ROW INTO ES_INDEX_ROW INDEX 1.
+        SEL_IDX = ES_INDEX_ROW-INDEX.
+
+        IF SY-SUBRC = 0.
+
+          READ TABLE GT_MRPHEAD INTO GS_MRPHEAD INDEX SEL_IDX.
+
+        ENDIF.
+
+        SELECT *
+        FROM ZTBPP0081 AS A JOIN ZTBMM1011 AS B
+          ON A~MATCODE = B~MATCODE
+        WHERE A~MRPNUM = @GS_MRPHEAD-MRPNUM
+        INTO CORRESPONDING FIELDS OF TABLE @GT_MRP.
+
+<font color ="#0000FF">*       특정 필드 색 설정</font>
+        LOOP AT GT_MRP INTO GS_MRP.
+          IF GS_MRP-EXSTK &lt; 0.
+            LS_COL-FNAME = 'EXSTK'.
+            LS_COL-COLOR-COL = '6'.
+            LS_COL-COLOR-INT = '0'.
+            LS_COL-COLOR-INV = '1'.
+            APPEND LS_COL TO GS_MRP-IT_CELL.
+
+            LS_COL-FNAME = 'UNITCODE5'.
+            LS_COL-COLOR-COL = '6'.
+            LS_COL-COLOR-INT = '0'.
+            LS_COL-COLOR-INV = '1'.
+            APPEND LS_COL TO GS_MRP-IT_CELL.
+
+          ENDIF.
+
+          IF GS_MRP-PLORINBO IS NOT INITIAL.
+            LS_COL-FNAME = 'PLORINBO'.
+            LS_COL-COLOR-COL = '5'.
+            LS_COL-COLOR-INT = '0'.
+            LS_COL-COLOR-INV = '1'.
+            APPEND LS_COL TO GS_MRP-IT_CELL.
+            CLEAR: LS_COL.
+
+            LS_COL-FNAME = 'UNITCODE4'.
+            LS_COL-COLOR-COL = '5'.
+            LS_COL-COLOR-INT = '0'.
+            LS_COL-COLOR-INV = '1'.
+            APPEND LS_COL TO GS_MRP-IT_CELL.
+
+          ENDIF.
+
+          IF GS_MRP-PLOROQ IS NOT INITIAL.
+            LS_COL-FNAME = 'PLOROQ'.
+            LS_COL-COLOR-COL = '0'.
+            LS_COL-COLOR-INT = '1'.
+            LS_COL-COLOR-INV = '0'.
+            APPEND LS_COL TO GS_MRP-IT_CELL.
+            CLEAR: LS_COL.
+
+            LS_COL-FNAME = 'UNITCODE6'.
+            LS_COL-COLOR-COL = '0'.
+            LS_COL-COLOR-INT = '1'.
+            LS_COL-COLOR-INV = '0'.
+            APPEND LS_COL TO GS_MRP-IT_CELL.
+
+          ENDIF.
+
+          MODIFY GT_MRP FROM GS_MRP TRANSPORTING IT_CELL.
+
+          CLEAR: LS_COL.
+
+        ENDLOOP.
+
+
+        GO_ALV2-&gt;REFRESH_TABLE_DISPLAY(
+          EXCEPTIONS
+            FINISHED       = 1                " Display was Ended (by Export)
+            OTHERS         = 2
+        ).
+        IF SY-SUBRC &lt;&gt; 0.
+        ENDIF.
+
+
+    ENDCASE.
+
+  ENDMETHOD.
+
+
+ENDCLASS.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>

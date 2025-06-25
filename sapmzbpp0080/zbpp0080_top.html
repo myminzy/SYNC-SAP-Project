@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZBPP0080_TOP</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZBPP0080_TOP</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include ZB06_MRP_TEST_TOP</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include ZB06_MRP_TEST_TOP                        - Module Pool      SAPMZB06_MRP_TEST</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+PROGRAM SAPMZB06_MRP_TEST.
+
+<font color ="#0000FF">* 사용 테이블 변수 선언</font>
+TABLES: ZTBPP0081, ZTBPP0010, ZTBPP0080, ZTBPP0011, ZTBMM0030, ZTBPP0020, ZTBPP0021, ZTBMM1010, ZTBMM1030.
+<font color ="#0000FF">* 시스템 변수 선언</font>
+DATA: OK_CODE TYPE SY-UCOMM.
+
+<font color ="#0000FF">**********************************************************************</font>
+<font color ="#0000FF">* ALV CONTAINER, ALV GRID 변수 선언</font>
+<font color ="#0000FF">**********************************************************************</font>
+DATA: GO_CONT  TYPE REF TO CL_GUI_CUSTOM_CONTAINER,
+      GO_ALV   TYPE REF TO CL_GUI_ALV_GRID,
+
+      GO_CONT2 TYPE REF TO CL_GUI_CUSTOM_CONTAINER,
+      GO_ALV2  TYPE REF TO CL_GUI_ALV_GRID.
+
+
+
+<font color ="#0000FF">**********************************************************************</font>
+<font color ="#0000FF">* 자재 명 & CELL 색깔 설정을 포함한 TYPE, ITAB, WORK AREA 선언</font>
+<font color ="#0000FF">**********************************************************************</font>
+TYPES: BEGIN OF TS_MRP.
+         include structure <a href ="ztbpp0081/dictionary-ztbpp0081.html">ZTBPP0081</a>.
+TYPES MATNAME TYPE ZTBMM1011-MATNAME.
+TYPES: IT_CELL TYPE LVC_T_SCOL.
+TYPES: END OF TS_MRP.
+
+DATA: GT_MRP TYPE TABLE OF TS_MRP,
+      GS_MRP TYPE TS_MRP.
+
+
+<font color ="#0000FF">**********************************************************************</font>
+<font color ="#0000FF">* DB TABLE ITAB & WORK AREA 변수 선언</font>
+<font color ="#0000FF">**********************************************************************</font>
+DATA: GT_ZTBPP0011 TYPE TABLE OF ZTBPP0011,
+      GS_ZTBPP0011 TYPE ZTBPP0011.
+
+DATA: GT_MRPHEAD TYPE TABLE OF ZTBPP0080,
+      GS_MRPHEAD TYPE ZTBPP0080.
+DATA: GT_ZTBPP0010 TYPE TABLE OF ZTBPP0010,
+      GS_ZTBPP0010 TYPE ZTBPP0010.
+
+DATA: GT_ZTBPP0070 TYPE TABLE OF ZTBPP0070,
+      GS_ZTBPP0070 TYPE ZTBPP0070,
+      GT_ZTBPP0071 TYPE TABLE OF ZTBPP0071,
+      GS_ZTBPP0071 TYPE ZTBPP0071.
+
+DATA: GT_ZTBMM1010 TYPE TABLE OF ZTBMM1010,
+      GS_ZTBMM1010 TYPE ZTBMM1010.
+
+DATA: GT_ZTBMM0070 TYPE TABLE OF ZTBMM0070,
+      GS_ZTBMM0070 TYPE ZTBMM0070.
+
+DATA: GT_ZTBPP0081 TYPE TABLE OF ZTBPP0081,
+      GS_ZTBPP0081 TYPE ZTBPP0081.
+
+" 현 자재 재고현황
+DATA: GT_ZTBMM0030 TYPE TABLE OF ZTBMM0030,
+      GS_ZTBMM0030 TYPE ZTBMM0030.
+
+
+DATA: GT_ZTBPP0020 TYPE TABLE OF ZTBPP0020,
+      GS_ZTBPP0020 TYPE ZTBPP0020,
+      GT_ZTBPP0021 TYPE TABLE OF ZTBPP0021,
+      GS_ZTBPP0021 TYPE ZTBPP0021.
+
+
+<font color ="#0000FF">**********************************************************************</font>
+<font color ="#0000FF">* 선택한 ROW 정보 가져올 변수 선언</font>
+<font color ="#0000FF">**********************************************************************</font>
+DATA: ET_INDEX_ROW TYPE LVC_T_ROW,
+      ES_INDEX_ROW TYPE LVC_S_ROW.
+DATA: SEL_IDX TYPE I.
+
+
+<font color ="#0000FF">**********************************************************************</font>
+<font color ="#0000FF">* BOM ITEM 데이터 가져올 TYPE, ITAB, WORK AREA 변수 선언</font>
+<font color ="#0000FF">**********************************************************************</font>
+TYPES BEGIN OF TS_BOM_TYPE.
+include structure <a href ="ztbpp0071/dictionary-ztbpp0071.html">ZTBPP0071</a>.
+TYPES MATTYPE TYPE ZTBMM1010-MATTYPE.
+TYPES END OF TS_BOM_TYPE.
+
+
+DATA: LT_BOM_ITEM TYPE TABLE OF TS_BOM_TYPE,
+      LS_BOM_ITEM TYPE TS_BOM_TYPE.
+
+
+<font color ="#0000FF">**********************************************************************</font>
+<font color ="#0000FF">* ALV LAYOUT, FIELD CATALOG, SORT 변수 선언</font>
+<font color ="#0000FF">**********************************************************************</font>
+DATA: GS_LAYO TYPE LVC_S_LAYO,
+      GT_FCAT TYPE LVC_T_FCAT,
+      GT_SORT TYPE LVC_T_SORT,
+      GT_FCAT1 TYPE LVC_T_FCAT.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>

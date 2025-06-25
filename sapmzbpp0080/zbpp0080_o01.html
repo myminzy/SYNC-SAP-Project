@@ -1,0 +1,418 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZBPP0080_O01</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZBPP0080_O01</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include ZB06_MRP_TEST_O01</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          ZB06_MRP_TEST_O01</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module STATUS_0100 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE STATUS_0100 OUTPUT.
+  SET PF-STATUS 'S100'.
+  SET TITLEBAR 'T100'.
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module CLEAR_OK_CODE OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE CLEAR_OK_CODE OUTPUT.
+  CLEAR:OK_CODE.
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module INIT_ALV OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE INIT_ALV OUTPUT.
+  IF GO_CONT IS INITIAL.
+
+    CREATE OBJECT GO_CONT
+      EXPORTING
+        CONTAINER_NAME              = 'AREA'
+      EXCEPTIONS
+        CNTL_ERROR                  = 1
+        CNTL_SYSTEM_ERROR           = 2
+        CREATE_ERROR                = 3
+        LIFETIME_ERROR              = 4
+        LIFETIME_DYNPRO_DYNPRO_LINK = 5
+        OTHERS                      = 6.
+    IF SY-SUBRC &lt;&gt; 0.
+    ENDIF.
+
+
+    CREATE OBJECT GO_ALV
+      EXPORTING
+        I_PARENT          = GO_CONT
+      EXCEPTIONS
+        ERROR_CNTL_CREATE = 1
+        ERROR_CNTL_INIT   = 2
+        ERROR_CNTL_LINK   = 3
+        ERROR_DP_CREATE   = 4
+        OTHERS            = 5.
+    IF SY-SUBRC &lt;&gt; 0.
+    ENDIF.
+
+
+    PERFORM SET_LAYOUT1.
+<font color ="#0000FF">*    PERFORM SET_SORT1.</font>
+
+    PERFORM SET_FCAT1.
+
+    SET HANDLER LCL_EVENT_HANDLER=&gt;ON_TOOLBAR FOR GO_ALV.
+    SET HANDLER LCL_EVENT_HANDLER=&gt;ON_USER_COMMAND FOR GO_ALV.
+
+
+    CALL METHOD GO_ALV-&gt;SET_TABLE_FOR_FIRST_DISPLAY
+      EXPORTING
+<font color ="#0000FF">*       I_BUFFER_ACTIVE               =</font>
+<font color ="#0000FF">*       I_BYPASSING_BUFFER            =</font>
+<font color ="#0000FF">*       I_CONSISTENCY_CHECK           =</font>
+        I_STRUCTURE_NAME              = 'ZTBPP0080'
+<font color ="#0000FF">*       IS_VARIANT                    =</font>
+<font color ="#0000FF">*       I_SAVE                        =</font>
+<font color ="#0000FF">*       I_DEFAULT                     = 'X'</font>
+        IS_LAYOUT                     = GS_LAYO
+<font color ="#0000FF">*       IS_PRINT                      =</font>
+<font color ="#0000FF">*       IT_SPECIAL_GROUPS             =</font>
+<font color ="#0000FF">*       IT_TOOLBAR_EXCLUDING          =</font>
+<font color ="#0000FF">*       IT_HYPERLINK                  =</font>
+<font color ="#0000FF">*       IT_ALV_GRAPHICS               =</font>
+<font color ="#0000FF">*       IT_EXCEPT_QINFO               =</font>
+<font color ="#0000FF">*       IR_SALV_ADAPTER               =</font>
+      CHANGING
+        IT_OUTTAB                     = GT_MRPHEAD
+        IT_FIELDCATALOG               = GT_FCAT1
+<font color ="#0000FF">*       IT_SORT                       =</font>
+<font color ="#0000FF">*       IT_FILTER                     =</font>
+      EXCEPTIONS
+        INVALID_PARAMETER_COMBINATION = 1
+        PROGRAM_ERROR                 = 2
+        TOO_MANY_LINES                = 3
+        OTHERS                        = 4.
+    IF SY-SUBRC &lt;&gt; 0.
+    ENDIF.
+
+  ELSE.
+
+    CALL METHOD GO_ALV-&gt;REFRESH_TABLE_DISPLAY
+      EXCEPTIONS
+        FINISHED = 1
+        OTHERS   = 2.
+    IF SY-SUBRC &lt;&gt; 0.
+    ENDIF.
+
+  ENDIF.
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module SET_DATA OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE  SET_DATA OUTPUT.
+
+  CLEAR: GT_MRPHEAD, GS_MRPHEAD, GT_ZTBPP0010, GT_ZTBPP0011, GT_MRP, GS_MRP, GT_ZTBPP0081,
+         GT_ZTBMM1010, GS_ZTBMM1010.
+
+  DATA : LV_NR       TYPE NUM7,
+         LV_HEAD_IDX TYPE I.
+  DATA : LT_MRP_READY TYPE TABLE OF ZTBPP0011,
+         LS_MRP_READY TYPE ZTBPP0011,
+         LT_MRP       TYPE TABLE OF ZTBPP0081,
+         LS_MRP       TYPE ZTBPP0081,
+         LV_T_MRP     TYPE TABLE OF TS_MRP.
+
+
+<font color ="#0000FF">* STATUS가 X인 값이 있으면 가져와서 NUMBERRAGNE 할당하고 MRP 헤더 DB테이블에 넣어줌 = 새로운 주단위판매계획이 생긴 경우</font>
+
+  SELECT *
+    FROM ZTBPP0010 AS A
+    WHERE A~STATUS = 'X'
+    INTO TABLE @GT_ZTBPP0010. " 실제로는 WHERE절에 생산계획일 날짜 가져와서 4주 기간 잡고 가져와야함 -&gt;엥먼소리지
+
+  IF SY-SUBRC = 0.
+<font color ="#0000FF">*   DB테이블에 STATUS 필드 값 O로 바꿔주기</font>
+    LOOP AT GT_ZTBPP0010 INTO GS_ZTBPP0010.
+      GS_ZTBPP0010-STATUS = 'O'.
+      UPDATE ZTBPP0010 FROM GS_ZTBPP0010.
+    ENDLOOP.
+
+<font color ="#0000FF">*   MRPHEAD에 겹치는 필드값 넣어주기</font>
+    SELECT *
+      FROM @GT_ZTBPP0010 AS A
+      INTO CORRESPONDING FIELDS OF TABLE @GT_MRPHEAD.
+
+    SORT GT_MRPHEAD BY SOPWNUM ASCENDING.
+
+    LOOP AT GT_MRPHEAD INTO GS_MRPHEAD.
+
+      CALL FUNCTION 'NUMBER_GET_NEXT'
+        EXPORTING
+          NR_RANGE_NR             = '01'
+          OBJECT                  = 'ZBBPP0090'
+<font color ="#0000FF">*         QUANTITY                = '1'</font>
+<font color ="#0000FF">*         SUBOBJECT               = ' '</font>
+<font color ="#0000FF">*         TOYEAR                  = '0000'</font>
+<font color ="#0000FF">*         IGNORE_BUFFER           = ' '</font>
+        IMPORTING
+          NUMBER                  = LV_NR
+<font color ="#0000FF">*         QUANTITY                =</font>
+<font color ="#0000FF">*         RETURNCODE              =</font>
+        EXCEPTIONS
+          INTERVAL_NOT_FOUND      = 1
+          NUMBER_RANGE_NOT_INTERN = 2
+          OBJECT_NOT_FOUND        = 3
+          QUANTITY_IS_0           = 4
+          QUANTITY_IS_NOT_1       = 5
+          INTERVAL_OVERFLOW       = 6
+          BUFFER_OVERFLOW         = 7
+          OTHERS                  = 8.
+      IF SY-SUBRC &lt;&gt; 0.
+      ENDIF.
+
+      GS_MRPHEAD-MRPNUM = 'MRP' && LV_NR.
+      GS_MRPHEAD-MRPDAT = SY-DATUM.
+      GS_MRPHEAD-STATUS = '소요량 계산 전'.
+
+      INSERT ZTBPP0080 FROM GS_MRPHEAD.
+
+
+<font color ="#0000FF">**********************************************************************</font>
+      DATA: LV_WSMRP TYPE ZTBPP0081. " MRP WORK SPACE
+
+      LV_HEAD_IDX = SY-TABIX.
+
+
+      SELECT *
+        FROM ZTBMM1010
+        INTO TABLE @GT_ZTBMM1010.
+
+
+
+<font color ="#0000FF">*    하나의 MRPNUM에 자재마스터 ITEM 모두 APPEND 시키기 &lt;- ZTBPP0071에 APPEND 시키기</font>
+<font color ="#0000FF">*    이미 있는 MATCODE에 해당하는 자재는 넣지 않기 (EX. 완제품)</font>
+
+<font color ="#0000FF">*    자재마스터 데이터 추가</font>
+      LOOP AT GT_ZTBMM1010 INTO GS_ZTBMM1010 WHERE MATTYPE &lt;&gt; 'C'.
+        LV_WSMRP-MRPNUM = GS_MRPHEAD-MRPNUM.
+        LV_WSMRP-SALESDATE = GS_MRPHEAD-SALESDATE.
+        LV_WSMRP-MATCODE = GS_ZTBMM1010-MATCODE.
+        LV_WSMRP-WEEK = LV_HEAD_IDX.
+        INSERT ZTBPP0081 FROM LV_WSMRP.
+
+
+        CLEAR: LV_WSMRP.
+
+      ENDLOOP.
+
+
+
+    ENDLOOP.
+
+
+
+<font color ="#0000FF">**********************************************************************</font>
+<font color ="#0000FF">* 데이터 불러오기</font>
+<font color ="#0000FF">**********************************************************************</font>
+<font color ="#0000FF">*   업데이트된 헤더 데이터 불러오기</font>
+    SELECT *
+      FROM ZTBPP0080
+      INTO CORRESPONDING FIELDS OF TABLE @GT_MRPHEAD.
+
+<font color ="#0000FF">*   기존에 넣은 아이템 데이터 및 자재명 불러오기</font>
+    SELECT *
+      FROM ZTBPP0081 AS A JOIN ZTBMM1011 AS B
+      ON A~MATCODE = B~MATCODE
+      INTO CORRESPONDING FIELDS OF TABLE @LV_T_MRP.
+
+<font color ="#0000FF">*   생산계획 아이템 데이터 가져오기</font>
+    SELECT *
+      FROM ZTBPP0011 AS A
+      FOR ALL ENTRIES IN @GT_MRPHEAD
+      WHERE SOPWNUM = @GT_MRPHEAD-SOPWNUM
+      INTO CORRESPONDING FIELDS OF TABLE @GT_ZTBPP0081.
+
+
+
+<font color ="#0000FF">**********************************************************************</font>
+<font color ="#0000FF">*   현재 MRP 결과 ITEM 테이블에 기본 구매자재가 들어있는 상황에서</font>
+<font color ="#0000FF">*   생산계획아이템에 있는 완제품과 반제품 데이터를 넣어줄 것</font>
+<font color ="#0000FF">**********************************************************************</font>
+    LOOP AT GT_ZTBPP0081 INTO GS_ZTBPP0081.
+
+<font color ="#0000FF">*     (EX. 현재 WA의 자재코드가 푸비어300ML이면 아이템 테이블에서</font>
+<font color ="#0000FF">*          해당 MRPNUM을 가지고있는 푸비어 반제품데이터 값을 누적시켜주기</font>
+
+      READ TABLE GT_MRPHEAD INTO GS_MRPHEAD WITH KEY SALESDATE = GS_ZTBPP0081-SALESDATE.
+      GS_ZTBPP0081-MRPNUM = GS_MRPHEAD-MRPNUM.
+<font color ="#0000FF">*       푸비어 -&gt; 푸비어반제품에 누적해주기</font>
+      IF GS_ZTBPP0081-MATCODE+3(*) &gt;= 19 AND GS_ZTBPP0081-MATCODE+3(*) &lt;= 21 .
+
+        SELECT SINGLE *
+          FROM ZTBPP0081
+          WHERE MRPNUM = @GS_MRPHEAD-MRPNUM
+            AND MATCODE = 'MAT0000016'
+          INTO CORRESPONDING FIELDS OF @LS_MRP.
+
+<font color ="#0000FF">*      에일리언 -&gt; 에일리언반제품에 누적해주기.</font>
+      ELSEIF GS_ZTBPP0081-MATCODE+3(*) &gt;= 22 AND GS_ZTBPP0081-MATCODE+3(*) &lt;= 24 .
+
+        SELECT SINGLE *
+          FROM ZTBPP0081
+          WHERE MRPNUM = @GS_MRPHEAD-MRPNUM
+            AND MATCODE = 'MAT0000017'
+          INTO CORRESPONDING FIELDS OF @LS_MRP.
+
+<font color ="#0000FF">*     이배라거 -&gt; 이배라거반제품에 누적해주기.</font>
+      ELSEIF GS_ZTBPP0081-MATCODE+3(*) &gt;= 25 AND GS_ZTBPP0081-MATCODE+3(*) &lt;= 27.
+
+        SELECT SINGLE *
+          FROM ZTBPP0081
+          WHERE MRPNUM = @GS_MRPHEAD-MRPNUM
+            AND MATCODE = 'MAT0000018'
+          INTO CORRESPONDING FIELDS OF @LS_MRP.
+
+      ENDIF.
+
+
+<font color ="#0000FF">**********************************************************************</font>
+<font color ="#0000FF">*      용량 별 누적 진행</font>
+<font color ="#0000FF">*      300 500 1500 경우 나눠서 용량*수량 해서 누적</font>
+<font color ="#0000FF">*      자재코드 잘라서 %3 == 1이면 300 2면 500 3이면 1500임</font>
+<font color ="#0000FF">**********************************************************************</font>
+      IF GS_ZTBPP0081-MATCODE+3(*) MOD 3 = 1.
+        LS_MRP-AMOUNTPRD += GS_ZTBPP0081-AMOUNTPRD * 300 / 1000.
+      ELSEIF GS_ZTBPP0081-MATCODE+3(*) MOD 3 = 2.
+        LS_MRP-AMOUNTPRD += GS_ZTBPP0081-AMOUNTPRD * 500 / 1000.
+      ELSEIF GS_ZTBPP0081-MATCODE+3(*) MOD 3 = 0.
+        LS_MRP-AMOUNTPRD += GS_ZTBPP0081-AMOUNTPRD * 1500 / 1000.
+      ENDIF.
+
+      LS_MRP-UNITCODE = 'L'.
+
+      UPDATE ZTBPP0081 FROM LS_MRP.
+
+      INSERT ZTBPP0081 FROM GS_ZTBPP0081.
+
+      CLEAR: LS_MRP, GS_ZTBPP0081.
+
+    ENDLOOP.
+
+
+
+
+
+    CLEAR: GT_MRP.
+
+
+  ELSE.
+
+    SELECT *
+      FROM ZTBPP0080
+      INTO CORRESPONDING FIELDS OF TABLE @GT_MRPHEAD.
+
+  ENDIF.
+
+
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module INIT_ALV2 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE INIT_ALV2 OUTPUT.
+
+  IF GO_CONT2 IS INITIAL.
+
+    CREATE OBJECT GO_CONT2
+      EXPORTING
+        CONTAINER_NAME              = 'AREA2'
+      EXCEPTIONS
+        CNTL_ERROR                  = 1
+        CNTL_SYSTEM_ERROR           = 2
+        CREATE_ERROR                = 3
+        LIFETIME_ERROR              = 4
+        LIFETIME_DYNPRO_DYNPRO_LINK = 5
+        OTHERS                      = 6.
+    IF SY-SUBRC &lt;&gt; 0.
+    ENDIF.
+
+
+    CREATE OBJECT GO_ALV2
+      EXPORTING
+        I_PARENT          = GO_CONT2
+      EXCEPTIONS
+        ERROR_CNTL_CREATE = 1
+        ERROR_CNTL_INIT   = 2
+        ERROR_CNTL_LINK   = 3
+        ERROR_DP_CREATE   = 4
+        OTHERS            = 5.
+    IF SY-SUBRC &lt;&gt; 0.
+    ENDIF.
+
+<font color ="#0000FF">*</font>
+    PERFORM SET_LAYOUT2.
+
+    PERFORM SET_FCAT2.
+    PERFORM SET_SORT2.
+
+
+    CALL METHOD GO_ALV2-&gt;SET_TABLE_FOR_FIRST_DISPLAY
+      EXPORTING
+<font color ="#0000FF">*       I_BUFFER_ACTIVE               =</font>
+<font color ="#0000FF">*       I_BYPASSING_BUFFER            =</font>
+<font color ="#0000FF">*       I_CONSISTENCY_CHECK           =</font>
+        I_STRUCTURE_NAME              = 'ZTBPP0081'
+<font color ="#0000FF">*       IS_VARIANT                    =</font>
+<font color ="#0000FF">*       I_SAVE                        =</font>
+<font color ="#0000FF">*       I_DEFAULT                     = 'X'</font>
+        IS_LAYOUT                     = GS_LAYO
+<font color ="#0000FF">*       IS_PRINT                      =</font>
+<font color ="#0000FF">*       IT_SPECIAL_GROUPS             =</font>
+<font color ="#0000FF">*       IT_TOOLBAR_EXCLUDING          =</font>
+<font color ="#0000FF">*       IT_HYPERLINK                  =</font>
+<font color ="#0000FF">*       IT_ALV_GRAPHICS               =</font>
+<font color ="#0000FF">*       IT_EXCEPT_QINFO               =</font>
+<font color ="#0000FF">*       IR_SALV_ADAPTER               =</font>
+      CHANGING
+        IT_OUTTAB                     = GT_MRP
+        IT_FIELDCATALOG               = GT_FCAT
+        IT_SORT                       = GT_SORT
+<font color ="#0000FF">*       IT_FILTER                     =</font>
+      EXCEPTIONS
+        INVALID_PARAMETER_COMBINATION = 1
+        PROGRAM_ERROR                 = 2
+        TOO_MANY_LINES                = 3
+        OTHERS                        = 4.
+    IF SY-SUBRC &lt;&gt; 0.
+    ENDIF.
+
+  ELSE.
+
+    CALL METHOD GO_ALV2-&gt;REFRESH_TABLE_DISPLAY
+      EXCEPTIONS
+        FINISHED = 1
+        OTHERS   = 2.
+    IF SY-SUBRC &lt;&gt; 0.
+    ENDIF.
+
+
+  ENDIF.
+
+ENDMODULE.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>

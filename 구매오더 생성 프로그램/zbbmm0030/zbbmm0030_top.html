@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZBBMM0030_TOP</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZBBMM0030_TOP</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include ZBBPP0010_TOP</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          ZBBPP0010_TOP</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+<font color ="#0000FF">* APPLICATION TOOLBAR에 버튼 만들 수 있는 테이블</font>
+TABLES: SSCRFIELDS.
+
+<font color ="#0000FF">* MANDT / WHCODE / DELFLG 는 추후에 따로 넣어줌</font>
+TYPES: BEGIN OF TS_STR,
+         PLTCODE TYPE ZTBMM1030-PLTCODE,
+         WHNAME  TYPE ZTBMM1030-WHNAME,
+         WHADNR  TYPE ZTBMM1030-WHADNR,
+         EMPID   TYPE ZTBMM1030-EMPID,
+       END OF TS_STR.
+
+DATA: GS_STR TYPE TS_STR,
+      GT_STR TYPE TABLE OF TS_STR.
+
+DATA: GS_ZTBMM1030 TYPE ZTBMM1030,
+      GT_ZTBMM1030 TYPE TABLE OF ZTBMM1030.
+
+DATA: GO_DOCK TYPE REF TO CL_GUI_DOCKING_CONTAINER,
+      GO_ALV TYPE REF TO CL_GUI_ALV_GRID,
+      GS_LAYO TYPE LVC_S_LAYO,
+      GT_FCAT TYPE LVC_T_FCAT,
+      GS_FCAT TYPE LVC_S_FCAT.
+
+DATA: OK_CODE TYPE SY-UCOMM.
+
+" FILE PATH 변수.
+DATA: GT_EXCEL       TYPE TABLE OF ALSMEX_TABLINE,
+      GS_EXCEL       LIKE LINE OF GT_EXCEL,
+<font color ="#0000FF">*      GT_FILE        TYPE FILETABLE,</font>
+<font color ="#0000FF">*      GS_FILE        LIKE LINE OF GT_FILE,</font>
+      GV_DIRECTORY   TYPE STRING,
+      GV_PATH        TYPE STRING.
+
+" DOWN_FILE 변수.
+DATA: GV_FILENAME    TYPE STRING,
+      GS_KEY         TYPE WWWDATATAB,
+      GV_FILE        TYPE STRING,
+      GV_PATH_FILE   TYPE STRING,
+      GV_RC_DOWNFILE TYPE SY-SUBRC,
+      GV_USER_ACTION TYPE I.
+
+
+<font color ="#0000FF">*FIELD-SYMBOLS: &lt;FS_COMP&gt; TYPE ANY.</font>
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>

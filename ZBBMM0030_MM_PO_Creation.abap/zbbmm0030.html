@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZBBMM0030</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZBBMM0030</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  [MM] 창고 MASTER 업로드 프로그램</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Report ZBBPP0010</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&    [PP]</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&    개발자                : CL2 KDT-B-06 김재하</font>
+<font color ="#0000FF">*&    프로그램 개요           : BOM MASTER 엑셀 업로드 프로그램</font>
+<font color ="#0000FF">*&    개발 시작일            : '2024.10.31'</font>
+<font color ="#0000FF">*&    개발 완료일            : '2024.10.31'</font>
+<font color ="#0000FF">*&    개발 상태             : 개발중</font>
+<font color ="#0000FF">*&    단위테스트 여부</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+REPORT ZBBMM0030 MESSAGE-ID ZCOMMON_MSG.
+
+include <a href ="zbbmm0030_top.html">ZBBMM0030_TOP</a>.
+include <a href ="zbbmm0030_s01.html">ZBBMM0030_S01</a>.
+include <a href ="zbbmm0030_i01.html">ZBBMM0030_I01</a>.
+include <a href ="zbbmm0030_o01.html">ZBBMM0030_O01</a>.
+include <a href ="zbbmm0030_f01.html">ZBBMM0030_F01</a>.
+
+<font color ="#0000FF">**********************************************************************</font>
+INITIALIZATION.
+  SSCRFIELDS-FUNCTXT_01 = ICON_XLS && '양식 다운로드'.
+
+
+<font color ="#0000FF">**********************************************************************</font>
+
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR PA_PATH.
+  PERFORM GET_PATH.
+
+
+
+<font color ="#0000FF">**********************************************************************</font>
+AT SELECTION-SCREEN.
+  CASE SSCRFIELDS-UCOMM.
+    WHEN 'FC01'.  "양식 다운로드 버튼 클릭 시
+      PERFORM DOWN_STP.
+  ENDCASE.
+
+<font color ="#0000FF">**********************************************************************</font>
+START-OF-SELECTION.
+  PERFORM CHECK_EXCEL. " 파일을 선택했는지 확인.
+  PERFORM UPLOAD_EXCEL.
+  CALL SCREEN 100.
+
+<font color ="#0000FF">*GUI Texts</font>
+<font color ="#0000FF">*----------------------------------------------------------</font>
+<font color ="#0000FF">* T100 --&gt; Excel 데이터 확인</font>
+
+<font color ="#0000FF">*Text elements</font>
+<font color ="#0000FF">*----------------------------------------------------------</font>
+<font color ="#0000FF">* T01 Excel 업로드</font>
+
+
+<font color ="#0000FF">*Messages</font>
+<font color ="#0000FF">*----------------------------------------------------------</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">* Message class: ZCOMMON_MSG</font>
+<font color ="#0000FF">*022   업로드할 Excel 파일을 선택해주세요.</font>
+<font color ="#0000FF">*026   해당 파일을 찾지 못했습니다.</font>
+<font color ="#0000FF">*027   Excel 템플릿을 성공적으로 다운로드했습니다.</font>
+<font color ="#0000FF">*029   Excel 업로드를 실패했습니다.</font>
+<font color ="#0000FF">*030   Excel 파일에 데이터가 존재하지 않습니다.</font>
+<font color ="#0000FF">*031   Excel 데이터를 성공적으로 저장했습니다.</font>
+<font color ="#0000FF">*032   Excel 데이터를 저장하지 못했습니다.</font>
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>

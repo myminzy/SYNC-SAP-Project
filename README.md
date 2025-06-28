@@ -32,3 +32,4 @@ e. 목적: ERP 통합 구축을 통해 주류 생산 및 공급망 관리의 효
 6. AS-IS / TO-BE 프로세스 설계 및 팀 내 역할 분담, 개발 범위 조율 
 7. ERDcloud를 활용하여 테이블 구성 및 데이터베이스 설계 
 8. 포트폴리오 링크: https://www.miricanvas.com/v/145z3dv
+9. ERD: https://drive.google.com/file/d/1syrBSt6pSYcWSW8drcNHHkTx9VcLOBQq/view

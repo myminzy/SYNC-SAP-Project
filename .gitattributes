@@ -1,5 +1,1 @@
-SAPMZBMM0020_MM_InfoRecord_Management.abap linguist-language=ABAP
-SAPMZBSD0080_MM_PlantMaster_Management.abap linguist-language=ABAP
-ZBBMM0020_MM_InfoRecord_Upload.abap linguist-language=ABAP
-ZBRMM0020_MM_PR_Inquiry_Approval.abap linguist-language=ABAP
-ZBRMM0030_MM_PO_Creation.abap linguist-language=ABAP
+*.abap linguist-language=ABAP

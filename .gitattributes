@@ -1,3 +1,6 @@
 *.abap linguist-language=ABAP
 *.sql linguist-language=SQL
-queries_from.html linguist-generated
+# HTML이지만 GitHub 언어 통계에서 제외
+dictionary-.html linguist-generated
+# 딕셔너리 문서는 전부 제외
+dictionary-*.html linguist-generated

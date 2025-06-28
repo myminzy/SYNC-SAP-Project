@@ -1,1 +1,2 @@
 *.abap linguist-language=ABAP
+*.sql linguist-language=SQL

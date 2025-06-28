@@ -1,4 +1,3 @@
 *.abap linguist-language=ABAP
-*.sql linguist-language=SQL
 queries_from_abap.sql linguist-language=SQL
 queries_from_.html linguist-generated

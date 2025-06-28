@@ -2,4 +2,4 @@
 *.sql linguist-language=SQL
 queries_from_abap.sql linguist-language=SQL
 # 딕셔너리 문서는 전부 제외
-dictionary-*.html linguist-generated
+queries_from_.html linguist-generated

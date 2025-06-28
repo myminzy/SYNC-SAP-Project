@@ -1,11 +1,12 @@
  [프로젝트 기술서]
  
 ◆ [SAP S/4 HANA 도입을 통한 주류 제조 운영 및 유통&공급 시스템 최적화 프로젝트]
-a. 역할: 컨설턴트 리더 
-b. 팀원: 8명 (SYNC 5기) 
-c. 기간: 2024.10 ~ 2024.12 (3개월) 
-d. 사용 툴: SAP GUI, SAP BTP, SAP Gateway, Eclipse, SAP UI5, CDS View, Erdcloud 
-e. 목적: ERP 통합 구축을 통해 주류 생산 및 공급망 관리의 효율성을 향상시키고 실시간 의사결정을 지원 
+1.
+    a. 역할: 컨설턴트 리더 
+    b. 팀원: 8명 (SYNC 5기) 
+    c. 기간: 2024.10 ~ 2024.12 (3개월) 
+    d. 사용 툴: SAP GUI, SAP BTP, SAP Gateway, Eclipse, SAP UI5, CDS View, Erdcloud 
+    e. 목적: ERP 통합 구축을 통해 주류 생산 및 공급망 관리의 효율성을 향상시키고 실시간 의사결정을 지원 
 
 ➢ 프로젝트 선정 이유:  
 1. 데이터 통합 기반 시각화 및 프로세스의 정확성 확보 

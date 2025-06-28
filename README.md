@@ -34,3 +34,4 @@
 7. ERDcloud를 활용하여 테이블 구성 및 데이터베이스 설계 
 8. 포트폴리오 링크: https://www.miricanvas.com/v/145z3dv
 9. ERD: https://drive.google.com/file/d/1syrBSt6pSYcWSW8drcNHHkTx9VcLOBQq/view
+
